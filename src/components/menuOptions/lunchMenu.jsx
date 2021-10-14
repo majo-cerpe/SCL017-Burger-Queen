@@ -10,7 +10,7 @@ const LunchMenu = (props) => {
             <div className='menuOptions'>
                 {menu.lunch.map((item) => (
                     <Item key={item.id} item={item} onAdd={onAdd} />
-                ))};
+                ))}
             </div>
         </div>
     );
