@@ -1,10 +1,10 @@
 import './order.css'
 import { collection, addDoc } from '@firebase/firestore';
-import React/* , { useEffect }  */ from 'react';
+import React, { useEffect } from 'react';
 /* import { useLocation } from 'react-router'; */
 import db from '../../firebase';
-/*import nextId from "react-id-generator"; */
-import { Button } from 'reactstrap';
+import nextId from "react-id-generator";
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 
 const Order = (props) => {
@@ -13,7 +13,7 @@ const Order = (props) => {
 
     const getTimeAndDate = () => {
         const today = new Date();
-        const date = `${today.getDate()} - ${(today.getMonth() + 1)} - ${today.getFullYear()}`;
+        const date = `${today.getDate()}/${(today.getMonth() + 1)}/${today.getFullYear()}`;
         const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
         const timeAndDate = `${time} ${date}`;
         return timeAndDate;
@@ -21,17 +21,49 @@ const Order = (props) => {
 
     const saveInFirestore = async () => {
         const docRef = await addDoc(collection(db, 'orders'), {
-            /*  orderId: nextId('order-'), */
+            orderId: nextId('order-'),
             total: orderPrice,
             time: getTimeAndDate(),
             order: cartItems,
         });
+        removeAllItems()
+        alert('Pedido guardado en Firebase')
     };
+
+    useEffect(() => {
+        localStorage.setItem('cart', JSON.stringify(cartItems));
+    }, [cartItems]);
 
 
     return (
         <aside>
             <h1>Detalle de la Orden</h1>
+            <hr></hr>
+            <Form>
+                <div className='clientData'>
+                    <FormGroup>
+                        <Label for="exampleEmail">Nombre cliente:</Label>
+                        <Input type="text" id="clientName" />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Label for="exampleSelect">Mesa:</Label>
+                        <Input type="select" id="selectTable">
+                            <option>Mesa 1</option>
+                            <option>Mesa 2</option>
+                            <option>Mesa 3</option>
+                            <option>Mesa 4</option>
+                            <option>Mesa 5</option>
+                        </Input>
+                    </FormGroup>
+
+                </div>
+            </Form>
+            <hr></hr>
+            <div className='rows2'>
+                <h6>Ítem</h6>
+                <h6>Cantidad/Precio Unitario</h6>
+            </div>
             <div>{cartItems.length === 0 && <div>Orden Vacia</div>}</div>
             {cartItems.map((item) => (
                 <div key={item.id} className='rows'>
@@ -48,7 +80,7 @@ const Order = (props) => {
             {cartItems.length !== 0 && (
                 <div>
                     <hr></hr>
-                    <div className='rows'>
+                    <div>
                         <strong>Total</strong>
                         <strong>${orderPrice.toFixed(2)}</strong>
                     </div>
