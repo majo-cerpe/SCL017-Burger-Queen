@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import data from './menu.json'
 import { useState } from 'react';
+import KitchenView from './components/kitchenView/kitchenView';
 
 
 const App = () => {
@@ -31,26 +32,26 @@ const App = () => {
 		}
 	};
 
-	const onRemove = (item) =>{
+	const onRemove = (item) => {
 		const exist = cartItems.find((x) => x.id === item.id)
-		if(exist.qty === 1){
+		if (exist.qty === 1) {
 			setCartItems(
 				cartItems.filter((x) =>
 					x.id !== item.id
 				)
 			);
-		}else{
+		} else {
 			setCartItems(
 				cartItems.map((x) =>
 					x.id === item.id ? { ...exist, qty: exist.qty - 1 } : x
 				)
-			);	
+			);
 		}
 	}
 
 	const removeAllItems = () => {
 		setCartItems([]);
-	  };
+	};
 
 	return (
 		<Router>
@@ -68,15 +69,17 @@ const App = () => {
 							<BreakfastMenu onAdd={onAdd} menu={menu} />
 							<Order onAdd={onAdd} onRemove={onRemove} cartItems={cartItems} removeAllItems={removeAllItems} />
 						</div>
-					</Route> <Route exact path="/lunchMenu">
+					</Route>
+					<Route exact path="/lunchMenu">
 						<WaiterView />
 						<div className='menuOptionsAndOrder'>
 							<LunchMenu onAdd={onAdd} menu={menu} />
-							<Order onAdd={onAdd} onRemove={onRemove} cartItems={cartItems} removeAllItems={removeAllItems}/>
+							<Order onAdd={onAdd} onRemove={onRemove} cartItems={cartItems} removeAllItems={removeAllItems} />
 						</div>
 					</Route>
-					{/* <Route exact path="/kitchenView">
-            </Route> */}
+				{/* 	<Route exact path="/kitchenView">
+						<KitchenView />
+					</Route> */}
 				</Switch>
 			</div>
 		</Router>
