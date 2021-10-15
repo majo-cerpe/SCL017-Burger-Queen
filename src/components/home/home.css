@@ -1,0 +1,8 @@
+.homeButtons{
+    display: grid;
+    grid-template-columns: 10% 10% 80%;
+}
+
+.header {
+    background-color: #333;
+}
