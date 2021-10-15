@@ -3,17 +3,47 @@
     margin-top: 25px;
     display: grid;
     grid-template-columns: 33% 33% 33%;
-   /*  display: flex;
-    flex-wrap: wrap;
-    justify-content: center; */
+    
+}
+.breakfastMenu{
+    margin-top: 2rem;
+    margin: 1rem;
+}
+
+.lunchMenu{
+    margin-top: 2rem;
+    margin: 1rem;
+}
+
+.itemCard{
+    margin: 1rem;
+
 }
 
 .card-header{
     font-size: 1rem;
+    padding-top: 0.5rem;
+    padding-top: 0.5rem;
+
 }
 
 .card-body {
     display: grid;
     grid-template-columns: 50% 50%;
     font-size: 0.8rem
+}
+
+.card-footer{
+    display: flex;
+    justify-content: right;
+}
+
+.menu{
+
+        margin: 0.5rem;
+        padding: 0.5rem;
+}
+
+.cardHeader{
+    font-size: 2rem;
 }
