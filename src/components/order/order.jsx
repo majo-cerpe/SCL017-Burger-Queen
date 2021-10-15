@@ -1,34 +1,15 @@
 import './order.css'
-import { collection, addDoc } from '@firebase/firestore';
 import React, { useEffect } from 'react';
-/* import { useLocation } from 'react-router'; */
-import db from '../../firebase';
-import nextId from "react-id-generator";
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Card, CardHeader } from 'reactstrap';
+import ClientAndTableForm from './clientAndTable';
+import SendButtonAndConfirmModal from './sendButtonAndConfirmModal';
 
 
 const Order = (props) => {
     const { cartItems, onAdd, onRemove, removeAllItems } = props;
-    const orderPrice = cartItems.reduce((a, c) => a + c.price * c.qty, 0); /* a=acumulator c=currentItem  */
+    
+    const orderPrice = cartItems.reduce((a, c) => a + c.price * c.qty, 0); /* a=acumulator / c=currentItem  */
 
-    const getTimeAndDate = () => {
-        const today = new Date();
-        const date = `${today.getDate()}/${(today.getMonth() + 1)}/${today.getFullYear()}`;
-        const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
-        const timeAndDate = `${time} ${date}`;
-        return timeAndDate;
-    }
-
-    const saveInFirestore = async () => {
-        const docRef = await addDoc(collection(db, 'orders'), {
-            orderId: nextId('order-'),
-            total: orderPrice,
-            time: getTimeAndDate(),
-            order: cartItems,
-        });
-        removeAllItems()
-        alert('Pedido guardado en Firebase')
-    };
 
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cartItems));
@@ -36,61 +17,44 @@ const Order = (props) => {
 
 
     return (
-        <aside>
-            <h1>Detalle de la Orden</h1>
-            <hr></hr>
-            <Form>
-                <div className='clientData'>
-                    <FormGroup>
-                        <Label for="exampleEmail">Nombre cliente:</Label>
-                        <Input type="text" id="clientName" />
-                    </FormGroup>
+        <aside className='orderDetail'>
+            <Card body inverse style={{ backgroundColor: '#333', borderColor: '#333' }}>
+                <CardHeader id='orderCardHeader'>Detalle de la Orden</CardHeader>
+                
+                <ClientAndTableForm />
 
-                    <FormGroup>
-                        <Label for="exampleSelect">Mesa:</Label>
-                        <Input type="select" id="selectTable">
-                            <option>Mesa 1</option>
-                            <option>Mesa 2</option>
-                            <option>Mesa 3</option>
-                            <option>Mesa 4</option>
-                            <option>Mesa 5</option>
-                        </Input>
-                    </FormGroup>
-
+                <div className='orderDetailHeader'>
+                    <h6>Ítem</h6>
+                    <h6>Cantidad/Precio Unitario</h6>
                 </div>
-            </Form>
-            <hr></hr>
-            <div className='rows2'>
-                <h6>Ítem</h6>
-                <h6>Cantidad/Precio Unitario</h6>
-            </div>
-            <div>{cartItems.length === 0 && <div>Orden Vacia</div>}</div>
-            {cartItems.map((item) => (
-                <div key={item.id} className='rows'>
-                    <div>{item.name}</div>
-                    <div className='buttonsDiv'>
-                        <Button onClick={() => onRemove(item)} >-</Button>
-                        <Button onClick={() => onAdd(item)} >+</Button>
+                <div>{cartItems.length === 0 && <div>Orden Vacia</div>}</div>
+                {cartItems.map((item) => (
+                    <div key={item.id} className='orderDetailColumns'>
+                        <div>{item.name}</div>
+                        <div className='buttonsDiv'>
+                            <Button onClick={() => onRemove(item)} >-</Button>
+                            <Button onClick={() => onAdd(item)} >+</Button>
+                        </div>
+                        <div>
+                            {item.qty} x ${item.price.toFixed(2)}
+                        </div>
                     </div>
+                ))}
+                {cartItems.length !== 0 && (
                     <div>
-                        {item.qty} x ${item.price.toFixed(2)}
+                        <hr></hr>
+                        <div>
+                            <strong>Total</strong>
+                            <strong>${orderPrice.toFixed(2)}</strong>
+                        </div>
+                        <hr></hr>
+                        <div className='buttonsDiv'>
+                            <div><Button onClick={() => removeAllItems()} color="danger">Borrar pedido</Button></div>
+                            {<SendButtonAndConfirmModal removeAllItems={removeAllItems} cartItems={cartItems} orderPrice={orderPrice} > </SendButtonAndConfirmModal>}
+                        </div>
                     </div>
-                </div>
-            ))}
-            {cartItems.length !== 0 && (
-                <div>
-                    <hr></hr>
-                    <div>
-                        <strong>Total</strong>
-                        <strong>${orderPrice.toFixed(2)}</strong>
-                    </div>
-                    <hr></hr>
-                    <div className='buttonsDiv'>
-                        <Button onClick={() => removeAllItems()} >Borrar pedido</Button>
-                        <Button onClick={() => saveInFirestore()}>Guardar Pedido</Button>
-                    </div>
-                </div>
-            )}
+                )}
+            </Card>
         </aside>
     );
 }
