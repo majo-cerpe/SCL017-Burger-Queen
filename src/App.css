@@ -1,5 +1,6 @@
 *{
-  	margin: 10px;
+  	margin: 0;
+	padding: 0px;
 }
 
 .App {
@@ -14,6 +15,8 @@
 .menuOptionsAndOrder{
     display: grid;
     grid-template-columns: 60% 40%;
+	padding-top: 0px;
+	margin-top: 0px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
